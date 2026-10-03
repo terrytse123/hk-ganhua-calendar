@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="轉換背景圖" />
+        android:text="轉換背景" />
 
     <Button
         android:id="@+id/clear_bg"
