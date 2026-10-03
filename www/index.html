@@ -312,6 +312,7 @@ function renderToday(){
   fav.textContent = on ? "已收藏" : "收藏";
   fav.classList.toggle("active", on);
 }
+function signById(id){ return SIGNS.find(s => s.id === id) || null; }
 function signForDate(d){
   const m = d.getMonth() + 1, day = d.getDate();
   const md = m * 100 + day;
