@@ -3,20 +3,31 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#1c1915" />
+<meta name="theme-color" content="#071426" />
 <title>香港幹話曆</title>
 <style>
   :root { --ink:#1c1915; --muted:#6f675d; --paper:#f4ecdc; --card:#fffaf1; --line:#e4d8c4; --red:#c23b2e; --gold:#a67c45; }
   * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body { font-family: "Noto Sans CJK TC","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; background: radial-gradient(1200px 500px at 50% -10%, #fff8ec 0%, transparent 55%), var(--paper); color: var(--ink); }
-  .app { max-width: 480px; margin: 0 auto; padding: 16px 16px 108px; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    font-family: "Noto Sans CJK TC","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    color: #f4f7ff;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(255,255,255,.55) 0 1px, transparent 1.6px),
+      radial-gradient(circle at 28% 72%, rgba(255,255,255,.4) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 70% 22%, rgba(255,255,255,.5) 0 1px, transparent 1.6px),
+      radial-gradient(circle at 84% 68%, rgba(255,255,255,.35) 0 1px, transparent 1.4px),
+      radial-gradient(circle at 50% 40%, rgba(90,130,220,.25), transparent 42%),
+      linear-gradient(180deg, #10284a, #071426 55%, #050b16);
+    background-attachment: fixed;
+  }
+  .app { max-width: 480px; margin: 0 auto; min-height: 100vh; padding: 16px 16px 108px; }
   header.top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .brand { display: flex; gap: 10px; align-items: center; }
-  .seal { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--red); color: var(--red); display: grid; place-items: center; font-weight: 700; transform: rotate(-8deg); background: rgba(194,59,46,.06); }
-  h1 { font-size: 20px; margin: 0; }
-  .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
-  .year-chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 10px; font-size: 12px; color: var(--gold); }
+  h1 { font-size: 20px; margin: 0; color: #f4f7ff; }
+  .sub { color: #c9d4ea; font-size: 12px; margin-top: 2px; }
+  .year-chip { border: 1px solid rgba(255,255,255,.2); background: rgba(8,16,32,.45); border-radius: 999px; padding: 6px 10px; font-size: 12px; color: #f0d7a2; }
+  .seal { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #f0d7a2; color: #f0d7a2; display: grid; place-items: center; font-weight: 700; transform: rotate(-8deg); background: rgba(240,215,162,.08); }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: 0 10px 30px rgba(60,40,20,.08); padding: 16px; position: relative; overflow: hidden; }
   .card:before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 8px; background: repeating-linear-gradient(90deg, #f7efe2 0 10px, #efe4d1 10px 12px); }
   .date-row { display: flex; justify-content: space-between; margin-top: 8px; }
@@ -46,19 +57,31 @@
   .sky-yj { display: grid; gap: 10px; }
   .sky-yj div { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; line-height: 1.5; }
   .mark { width: 28px; height: 28px; border: 1.5px solid #e7eefc; border-radius: 50%; display: grid; place-items: center; flex: none; font-size: 14px; }
-  .sign-row { display: flex; justify-content: space-between; align-items: center; margin: 12px 2px; color: var(--ink); }
+  .sign-row { display: flex; justify-content: space-between; align-items: center; margin: 12px 2px; color: #f4f7ff; }
   .sign-btn { border-radius: 999px; padding: 8px 12px; }
   .sign-btn { border-radius: 999px; padding: 8px 12px; }
   .horo { margin-top: 8px; display: grid; gap: 8px; }
   .horo div { background: #fbf6ee; border-radius: 12px; padding: 8px 10px; font-size: 14px; line-height: 1.55; }
   .horo span { display: block; color: var(--gold); font-size: 11px; margin-bottom: 2px; }
   .stars { color: var(--red); letter-spacing: 2px; }
+  .card { background: transparent; border: 0; box-shadow: none; padding: 0; }
+  .card:before { display: none; }
+  .sign-logo { text-align: center; font-size: 42px; line-height: 1; margin-top: 4px; text-shadow: 0 0 12px rgba(255,255,255,.45); }
   .picker {
-    position: fixed; inset: 0; background: rgba(28,25,21,.45); display: none;
-    align-items: flex-end; justify-content: center; z-index: 5;
+    position: fixed; inset: 0; z-index: 30; display: none;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,.4) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 75% 30%, rgba(255,255,255,.35) 0 1px, transparent 1.5px),
+      linear-gradient(180deg, #10284a, #071426);
+    color: #f4f7ff; padding: 28px 16px 24px;
   }
-  .picker.on { display: flex; }
-  .picker-card { width: min(480px, 100%); background: var(--card); border-radius: 22px 22px 0 0; padding: 16px 16px 28px; }
+  .picker.on { display: block; }
+  .picker-card { background: transparent; width: min(480px, 100%); margin: 0 auto; padding: 0; }
+  .signs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+  .signs button { min-height: 92px; background: rgba(255,255,255,.08); color: #f4f7ff; border: 1px solid rgba(255,255,255,.16); border-radius: 16px; }
+  .signs .glyph { display: block; font-size: 28px; line-height: 1.1; }
+  .tabbar { background: rgba(7,20,38,.92); border-top: 1px solid rgba(255,255,255,.12); }
+  .tabbar button, .tabbar button.on { color: #f4f7ff; }
   .signs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
   .signs button { min-height: 64px; }
   .almanac { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -113,6 +136,7 @@
   <section id="panel-today" class="panel on">
     <article class="card" id="today-card">
       <div class="sky">
+        <div class="sign-logo" id="sign-logo">♒</div>
         <div class="sky-top">
           <span id="weekday">星期五</span>
           <span class="sky-month" id="month-en">1月</span>
@@ -129,7 +153,7 @@
       </div>
       <div class="sign-row">
         <strong id="sign-label">未揀星座</strong>
-        <button id="pick-sign" class="sign-btn ghost">轉星座</button>
+        <button id="pick-sign" class="sign-btn">揀星座</button>
       </div>
       <div class="actions">
         <button id="prev">上一日</button>
@@ -175,6 +199,7 @@
   <button data-tab="fav">收藏</button>
   <button data-tab="search">搜尋</button>
   <button data-tab="about">關於</button>
+  <button id="tab-sign" type="button">星座</button>
 </nav>
 <div class="picker" id="picker">
   <div class="picker-card">
@@ -197,18 +222,18 @@ function clampYear(d){
 }
 function hash(s){ let h = 0; for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) >>> 0; return h; }
 const SIGNS = [
-  { id: "aries", name: "白羊座", range: "3/21–4/19" },
-  { id: "taurus", name: "金牛座", range: "4/20–5/20" },
-  { id: "gemini", name: "雙子座", range: "5/21–6/21" },
-  { id: "cancer", name: "巨蟹座", range: "6/22–7/22" },
-  { id: "leo", name: "獅子座", range: "7/23–8/22" },
-  { id: "virgo", name: "處女座", range: "8/23–9/22" },
-  { id: "libra", name: "天秤座", range: "9/23–10/23" },
-  { id: "scorpio", name: "天蠍座", range: "10/24–11/22" },
-  { id: "sagittarius", name: "射手座", range: "11/23–12/21" },
-  { id: "capricorn", name: "魔羯座", range: "12/22–1/19" },
-  { id: "aquarius", name: "水瓶座", range: "1/20–2/18" },
-  { id: "pisces", name: "雙魚座", range: "2/19–3/20" }
+  { id: "aries", name: "白羊座", range: "3/21–4/19", glyph: "♈" },
+  { id: "taurus", name: "金牛座", range: "4/20–5/20", glyph: "♉" },
+  { id: "gemini", name: "雙子座", range: "5/21–6/21", glyph: "♊" },
+  { id: "cancer", name: "巨蟹座", range: "6/22–7/22", glyph: "♋" },
+  { id: "leo", name: "獅子座", range: "7/23–8/22", glyph: "♌" },
+  { id: "virgo", name: "處女座", range: "8/23–9/22", glyph: "♍" },
+  { id: "libra", name: "天秤座", range: "9/23–10/23", glyph: "♎" },
+  { id: "scorpio", name: "天蠍座", range: "10/24–11/22", glyph: "♏" },
+  { id: "sagittarius", name: "射手座", range: "11/23–12/21", glyph: "♐" },
+  { id: "capricorn", name: "魔羯座", range: "12/22–1/19", glyph: "♑" },
+  { id: "aquarius", name: "水瓶座", range: "1/20–2/18", glyph: "♒" },
+  { id: "pisces", name: "雙魚座", range: "2/19–3/20", glyph: "♓" }
 ];
 const OVERALL = ["今日宜慢半拍，急事先放低。","有人會突然搵你，回短句就得。","節奏順，唔使同人比較。","小阻滯會出現，轉個方法就過。","適合收尾，唔適合開新戰場。","直覺準過建議，聽完可以唔跟。","午後精神好過朝早。","今日貴精唔貴多。","有句唔講得太盡嘅話，留到聽日。","平淡就係好運。"];
 const LOVE = ["感情宜直講，忌猜。","單身唔使急，熟人也得。","拍拖記得稱讚一件具體嘅事。","舊話題唔好再翻。","今晚適合食飯多過傾計。","畀對方空間，自己都輕。","一句多謝好過一份禮物。","唔好用已讀試探人。"];
@@ -256,6 +281,7 @@ function renderToday(){
   document.getElementById("quote").textContent = quoteFor(d);
   const sign = signById(state.sign) || signForDate(d);
   document.getElementById("sign-label").textContent = sign.name + " · " + sign.range;
+  document.getElementById("sign-logo").textContent = sign.glyph;
   const f = fortuneFor(d, sign);
   document.getElementById("horo").textContent = "給" + sign.name + "嘅你，" + f.overall + f.love + f.work + "幸運色係" + f.color + "，數字 " + f.number + "。";
   document.getElementById("yi").textContent = YI[hash(k + sign.id) % YI.length];
@@ -419,11 +445,12 @@ function closePicker(){ document.getElementById("picker").classList.remove("on")
 const signBox = document.getElementById("signs");
 SIGNS.forEach(s => {
   const b = document.createElement("button");
-  b.innerHTML = s.name + "<br><small>" + s.range + "</small>";
-  b.onclick = () => { saveSign(s.id); closePicker(); renderToday(); toast("已揀 " + s.name); };
+  b.innerHTML = '<span class="glyph">' + s.glyph + "</span>" + s.name + "<br><small>" + s.range + "</small>";
+  b.onclick = (e) => { e.stopPropagation(); saveSign(s.id); closePicker(); renderToday(); toast("已揀 " + s.name); };
   signBox.appendChild(b);
 });
 document.getElementById("pick-sign").onclick = openPicker;
+document.getElementById("tab-sign").onclick = openPicker;
 document.getElementById("picker").onclick = (e) => { if (e.target.id === "picker" && state.sign) closePicker(); };
 loadFavs();
 loadSign();

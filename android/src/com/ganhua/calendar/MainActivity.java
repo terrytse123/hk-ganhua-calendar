@@ -22,8 +22,8 @@ public class MainActivity extends Activity {
         webView = new WebView(this);
         setContentView(webView);
         try {
-            getWindow().setStatusBarColor(Color.parseColor("#1C1915"));
-            getWindow().setNavigationBarColor(Color.parseColor("#1C1915"));
+            getWindow().setStatusBarColor(Color.parseColor("#071426"));
+            getWindow().setNavigationBarColor(Color.parseColor("#071426"));
         } catch (Exception ignored) {
         }
         prefs = getSharedPreferences("ganhua", MODE_PRIVATE);
