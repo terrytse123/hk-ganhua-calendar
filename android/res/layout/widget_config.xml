@@ -44,6 +44,19 @@
         android:textColor="#C9D4EA" />
 
     <Button
+        android:id="@+id/pick_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="轉換背景圖" />
+
+    <Button
+        android:id="@+id/clear_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="改返純色背景" />
+
+    <Button
         android:id="@+id/save_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

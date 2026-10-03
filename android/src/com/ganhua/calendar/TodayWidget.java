@@ -6,7 +6,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+
+import java.io.File;
 import android.widget.RemoteViews;
 
 import org.json.JSONObject;
@@ -36,7 +40,18 @@ public class TodayWidget extends AppWidgetProvider {
         int alpha = prefs.getInt(id + "_alpha", 180);
         boolean weather = prefs.getBoolean(id + "_weather", false);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_today);
-        views.setInt(R.id.widget_root, "setBackgroundColor", Color.argb(alpha, 16, 32, 51));
+        boolean image = prefs.getBoolean(id + "_image", false);
+        File bg = new File(context.getFilesDir(), "widget-" + id + ".jpg");
+        if (image && bg.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(bg.getAbsolutePath());
+            if (bitmap != null) {
+                views.setImageViewBitmap(R.id.widget_bg, bitmap);
+                views.setInt(R.id.widget_bg, "setImageAlpha", alpha);
+                views.setInt(R.id.widget_root, "setBackgroundColor", Color.TRANSPARENT);
+            }
+        } else {
+            views.setInt(R.id.widget_root, "setBackgroundColor", Color.argb(alpha, 16, 32, 51));
+        }
         views.setTextViewText(R.id.widget_date, (now.get(Calendar.MONTH) + 1) + "月" + now.get(Calendar.DAY_OF_MONTH) + "日");
         views.setTextViewText(R.id.widget_week, WEEK[now.get(Calendar.DAY_OF_WEEK) - 1]);
         views.setTextViewText(R.id.widget_quote, quoteFor(context, now));
