@@ -88,6 +88,48 @@ function yearGZ(lunarYear){
   const i = lunarYear - 4;
   return GAN[((i % 10) + 10) % 10] + ZHI[((i % 12) + 12) % 12];
 }
+function dayGZ(date){
+  const n = Math.round((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(1984, 1, 2)) / 86400000);
+  const i = ((n % 60) + 60) % 60;
+  return { gan: GAN[i % 10], zhi: ZHI[i % 12] };
+}
+const OFFICERS = ["建","除","滿","平","定","執","破","危","成","收","開","閉"];
+const OFFICER_YI = {
+  建: ["祭祀","祈福","出行","上樑"],
+  除: ["祭祀","掃舍","療病","解除"],
+  滿: ["祈福","結親","開市","納財"],
+  平: ["修垣","平治道塗","修飾"],
+  定: ["冠帶","宴會","交易","納采"],
+  執: ["祭祀","捕捉","栽種"],
+  破: ["破屋","拆卸","求醫"],
+  危: ["安床","入宅","造船"],
+  成: ["嫁娶","開市","入學","立券"],
+  收: ["納財","收穫","捕捉","祭祀"],
+  開: ["開市","修造","嫁娶","出行"],
+  閉: ["築堤","塞穴","安葬"]
+};
+const OFFICER_JI = {
+  建: ["動土","開倉","破土"],
+  除: ["求官","上任","嫁娶"],
+  滿: ["服藥","栽種","出行"],
+  平: ["祈福","求嗣"],
+  定: ["詞訟","出行","開渠"],
+  執: ["開市","嫁娶","移徙"],
+  破: ["嫁娶","交易","出行"],
+  危: ["登高","出行","行船"],
+  成: ["詞訟","安葬"],
+  收: ["出行","開市","安葬"],
+  開: ["安葬","破土"],
+  閉: ["開市","出行","修造"]
+};
+function almanacFor(date){
+  const lunar = solarToLunar(date);
+  const gz = dayGZ(date);
+  const monthBranch = lunar ? (lunar.month + 1) % 12 : (date.getMonth() + 2) % 12;
+  const dayBranch = ZHI.indexOf(gz.zhi);
+  const officer = OFFICERS[(dayBranch - monthBranch + 12) % 12];
+  return { gz: gz.gan + gz.zhi, officer, yi: OFFICER_YI[officer], ji: OFFICER_JI[officer] };
+}
 
 function solarTermOn(date){
   const y = date.getFullYear();
