@@ -1,6 +1,8 @@
 package com.ganhua.calendar;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -46,6 +48,18 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        refreshWidgets();
+    }
+
+    private void refreshWidgets() {
+        AppWidgetManager manager = AppWidgetManager.getInstance(this);
+        int[] ids = manager.getAppWidgetIds(new ComponentName(this, TodayWidget.class));
+        for (int id : ids) TodayWidget.update(this, manager, id);
+    }
+
+    @Override
     public void onBackPressed() {
         webView.evaluateJavascript(
                 "(function(){try{return window.handleAndroidBack?window.handleAndroidBack():true;}catch(e){return true;}})()",
@@ -70,6 +84,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void save(String key, String value) {
             prefs.edit().putString(key, value).apply();
+            if ("sign".equals(key)) refreshWidgets();
         }
 
         @JavascriptInterface
