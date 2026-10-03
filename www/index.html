@@ -300,14 +300,6 @@ function signForDate(d){
   while (i < cuts.length && md >= cuts[i]) i++;
   return signById(ids[(i + 11) % 12]);
 }
-  const h = hash(k);
-  document.getElementById("yi").textContent = YI[h % YI.length];
-  document.getElementById("ji").textContent = JI[(h >> 3) % JI.length];
-  const fav = document.getElementById("fav");
-  const on = state.favs.has(k);
-  fav.textContent = on ? "已收藏" : "收藏";
-  fav.classList.toggle("active", on);
-}
 function renderMonth(){
   const m = state.month;
   document.getElementById("month-label").textContent = m.getFullYear() + " 年 " + (m.getMonth() + 1) + " 月";
