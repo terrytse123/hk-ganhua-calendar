@@ -27,7 +27,27 @@
   .badge { font-size: 12px; border-radius: 999px; padding: 4px 8px; background: #f6efe4; color: #8e241c; border: 1px solid #eddccc; }
   .badge.term { color: #6d542c; }
   .quote { font-size: 22px; line-height: 1.55; margin: 12px 0 8px; min-height: 72px; }
-  .sign-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .sky {
+    background: radial-gradient(circle at 20% 10%, rgba(255,255,255,.35) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 70% 30%, rgba(255,255,255,.4) 0 1px, transparent 1.6px),
+      radial-gradient(circle at 40% 80%, rgba(255,255,255,.25) 0 1px, transparent 1.4px),
+      radial-gradient(circle at 50% 40%, rgba(120,160,255,.18), transparent 55%),
+      linear-gradient(180deg, #10233f, #071426 70%);
+    color: #f4f7ff; border-radius: 28px; padding: 22px 18px 18px; min-height: 420px;
+  }
+  .sky-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; color: #d5def0; font-size: 18px; }
+  .sky-top span:last-child { text-align: right; }
+  .sky-month { letter-spacing: 1px; font-weight: 700; }
+  .sky-day { text-align: center; font-size: 84px; line-height: .9; font-weight: 600; margin: 8px 0 4px; }
+  .sky-quote { text-align: center; font-size: 26px; line-height: 1.35; font-weight: 600; margin: 6px 8px 12px; }
+  .sky-line { height: 1px; background: linear-gradient(90deg, transparent, #d7e4ff, transparent); margin: 8px 12px 14px; position: relative; }
+  .sky-line:after { content: ""; position: absolute; left: 50%; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: #fff; transform: translateX(-50%); box-shadow: 0 0 8px #fff; }
+  .sky-body { font-size: 15px; line-height: 1.7; color: #e7eefc; margin: 0 4px 14px; }
+  .sky-yj { display: grid; gap: 10px; }
+  .sky-yj div { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; line-height: 1.5; }
+  .mark { width: 28px; height: 28px; border: 1.5px solid #e7eefc; border-radius: 50%; display: grid; place-items: center; flex: none; font-size: 14px; }
+  .sign-row { display: flex; justify-content: space-between; align-items: center; margin: 12px 2px; color: var(--ink); }
+  .sign-btn { border-radius: 999px; padding: 8px 12px; }
   .sign-btn { border-radius: 999px; padding: 8px 12px; }
   .horo { margin-top: 8px; display: grid; gap: 8px; }
   .horo div { background: #fbf6ee; border-radius: 12px; padding: 8px 10px; font-size: 14px; line-height: 1.55; }
@@ -92,24 +112,24 @@
   </header>
   <section id="panel-today" class="panel on">
     <article class="card" id="today-card">
-      <div class="date-row">
-        <div class="big-day" id="big-day">1</div>
-        <div class="date-meta">
-          <strong id="ym">2026 / 01</strong><br />
-          <span id="weekday">星期五</span><br />
-          <span id="lunar">農曆</span>
+      <div class="sky">
+        <div class="sky-top">
+          <span id="weekday">星期五</span>
+          <span class="sky-month" id="month-en">1月</span>
+          <span id="holiday-label">平日</span>
+        </div>
+        <div class="sky-day" id="big-day">01</div>
+        <div class="sky-quote" id="quote">今日先休息，聽日再安排。</div>
+        <div class="sky-line"></div>
+        <p class="sky-body" id="horo">給你嘅今日運程會顯示喺呢度。</p>
+        <div class="sky-yj">
+          <div><span class="mark">宜</span><span id="yi">留少少時間俾自己。</span></div>
+          <div><span class="mark">忌</span><span id="ji">唔好用忙嚟避開攰。</span></div>
         </div>
       </div>
-      <div class="badges" id="badges"></div>
-      <div class="quote" id="quote"></div>
       <div class="sign-row">
         <strong id="sign-label">未揀星座</strong>
-        <button id="pick-sign" class="sign-btn ghost">揀星座</button>
-      </div>
-      <div class="horo" id="horo"></div>
-      <div class="almanac">
-        <div><span>宜</span><b id="yi"></b></div>
-        <div><span>忌</span><b id="ji"></b></div>
+        <button id="pick-sign" class="sign-btn ghost">轉星座</button>
       </div>
       <div class="actions">
         <button id="prev">上一日</button>
@@ -226,33 +246,34 @@ function renderToday(){
   const d = state.cursor;
   const k = keyOf(d);
   const lunar = solarToLunar(d);
-  document.getElementById("big-day").textContent = d.getDate();
-  document.getElementById("ym").textContent = d.getFullYear() + " / " + pad(d.getMonth() + 1);
-  document.getElementById("weekday").textContent = WEEK[d.getDay()];
-  document.getElementById("lunar").textContent = lunarLabel(lunar);
-  document.getElementById("gz").textContent = lunar ? yearGZ(lunar.year) + "年" : "香港";
   const holiday = (hkHolidays(d.getFullYear())[k]) || "";
   const term = solarTermOn(d);
-  const badges = document.getElementById("badges");
-  badges.innerHTML = "";
-  if (holiday) badges.innerHTML += '<span class="badge">' + holiday + "</span>";
-  if (term) badges.innerHTML += '<span class="badge term">' + term + "</span>";
-  if (k === keyOf(todayDate())) badges.innerHTML += '<span class="badge term">今日</span>';
-  if (!holiday && !term) badges.innerHTML += '<span class="badge term">平淡一日都算數</span>';
+  document.getElementById("big-day").textContent = pad(d.getDate());
+  document.getElementById("month-en").textContent = (d.getMonth() + 1) + "月";
+  document.getElementById("weekday").textContent = WEEK[d.getDay()];
+  document.getElementById("holiday-label").textContent = holiday || term || "平日";
+  document.getElementById("gz").textContent = lunar ? lunarLabel(lunar) : "香港";
   document.getElementById("quote").textContent = quoteFor(d);
-  const sign = signById(state.sign);
-  document.getElementById("sign-label").textContent = sign ? sign.name + " · " + sign.range : "未揀星座";
-  const box = document.getElementById("horo");
-  if (!sign) {
-    box.innerHTML = '<div>先揀星座，先有今日運程。</div>';
-  } else {
-    const f = fortuneFor(d, sign);
-    box.innerHTML = '<div><span>今日運勢</span><b class="stars">' + "★".repeat(f.stars) + "☆".repeat(5 - f.stars) + "</b> " + f.overall + "</div>"
-      + "<div><span>感情</span>" + f.love + "</div>"
-      + "<div><span>工作</span>" + f.work + "</div>"
-      + "<div><span>財運</span>" + f.money + "</div>"
-      + "<div><span>幸運</span>色 " + f.color + " · 數字 " + f.number + "</div>";
-  }
+  const sign = signById(state.sign) || signForDate(d);
+  document.getElementById("sign-label").textContent = sign.name + " · " + sign.range;
+  const f = fortuneFor(d, sign);
+  document.getElementById("horo").textContent = "給" + sign.name + "嘅你，" + f.overall + f.love + f.work + "幸運色係" + f.color + "，數字 " + f.number + "。";
+  document.getElementById("yi").textContent = YI[hash(k + sign.id) % YI.length];
+  document.getElementById("ji").textContent = JI[hash(k + sign.id + "ji") % JI.length];
+  const fav = document.getElementById("fav");
+  const on = state.favs.has(k);
+  fav.textContent = on ? "已收藏" : "收藏";
+  fav.classList.toggle("active", on);
+}
+function signForDate(d){
+  const m = d.getMonth() + 1, day = d.getDate();
+  const md = m * 100 + day;
+  const cuts = [120, 219, 321, 420, 521, 622, 723, 823, 923, 1024, 1123, 1222];
+  const ids = ["capricorn","aquarius","pisces","aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius"];
+  let i = 0;
+  while (i < cuts.length && md >= cuts[i]) i++;
+  return signById(ids[(i + 11) % 12]);
+}
   const h = hash(k);
   document.getElementById("yi").textContent = YI[h % YI.length];
   document.getElementById("ji").textContent = JI[(h >> 3) % JI.length];
@@ -406,7 +427,7 @@ document.getElementById("pick-sign").onclick = openPicker;
 document.getElementById("picker").onclick = (e) => { if (e.target.id === "picker" && state.sign) closePicker(); };
 loadFavs();
 loadSign();
-if (!state.sign) openPicker();
+if (!state.sign) state.sign = signForDate(todayDate()).id;
 state.cursor = todayDate();
 if (state.cursor.getFullYear() < MIN_YEAR || state.cursor.getFullYear() > MAX_YEAR) state.cursor = new Date(2026, 0, 1);
 state.month = new Date(state.cursor.getFullYear(), state.cursor.getMonth(), 1);
