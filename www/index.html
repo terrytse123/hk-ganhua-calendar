@@ -55,7 +55,9 @@
   .stars { color: var(--red); letter-spacing: 2px; }
   .card { background: transparent; border: 0; box-shadow: none; padding: 0; }
   .card:before { display: none; }
-  .sign-logo { text-align: center; font-size: 42px; line-height: 1; margin-top: 4px; text-shadow: 0 0 12px rgba(255,255,255,.45); }
+  .sign-logo { text-align: center; height: 52px; margin-top: 4px; }
+  .sign-logo svg { filter: drop-shadow(0 0 6px rgba(159,223,255,.8)); }
+  .signs .glyph { display: flex; justify-content: center; height: 36px; }
   .picker {
     position: fixed; inset: 0; z-index: 30; display: none;
     background:
@@ -133,7 +135,7 @@
   <section id="panel-today" class="panel on">
     <article class="card" id="today-card">
       <div class="sky">
-        <div class="sign-logo" id="sign-logo">♒</div>
+        <div class="sign-logo" id="sign-logo"></div>
         <div class="sky-top">
           <span id="weekday">星期五</span>
           <span class="sky-month" id="month-en">1月</span>
@@ -238,7 +240,24 @@ const WORK = ["工作先做最煩嗰件。","會議可以短，結論要寫低�
 const MONEY = ["財運平穩，唔好追消息。","小額支出要記低。","適合儲，唔適合搏。","免費嘢都有代價。","舊單先清，再講新單。","今日唔係投資日。","飯錢可以花，衝動唔好。","對住數字飲杯水先決定。"];
 const COLORS = ["紅色","米色","深藍","綠色","金色","白色","杏色","黑色"];
 function quoteFor(d){ return QUOTES[hash(keyOf(d)) % QUOTES.length]; }
-function signById(id){ return SIGNS.find(s => s.id === id) || null; }
+const ICONS = {
+  aries: "M8 28 L20 16 L32 28 M20 16 L20 36 M14 22 L26 22",
+  taurus: "M12 16 Q20 8 28 16 M20 18 L20 34 M14 28 L26 28",
+  gemini: "M12 12 L12 36 M28 12 L28 36 M12 16 L28 16 M12 32 L28 32",
+  cancer: "M10 20 Q20 10 30 20 M10 28 Q20 38 30 28",
+  leo: "M12 30 Q8 18 18 18 Q28 18 24 30 Q34 34 30 22",
+  virgo: "M10 12 L10 30 Q10 36 16 36 L22 36 M16 12 L16 30 M22 12 L22 34 Q28 40 32 30",
+  libra: "M10 28 L30 28 M12 28 Q20 14 28 28 M14 34 L26 34",
+  scorpio: "M10 14 L10 28 Q10 34 16 34 L24 34 L30 28 M26 24 L30 28 L26 32",
+  sagittarius: "M10 34 L30 14 M22 14 L30 14 L30 22 M16 20 L24 28",
+  capricorn: "M10 16 L10 28 Q10 36 18 36 Q26 36 26 28 L26 18 Q32 24 28 30",
+  aquarius: "M8 18 L14 24 L20 18 L26 24 L32 18 M8 28 L14 34 L20 28 L26 34 L32 28",
+  pisces: "M14 12 L14 36 M26 12 L26 36 M10 24 L30 24"
+};
+function signSvg(id){
+  const d = ICONS[id] || ICONS.aries;
+  return '<svg viewBox="0 0 40 48" width="42" height="48" aria-hidden="true"><g fill="none" stroke="#9fdfff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="' + d + '"/></g><g fill="#eaf7ff">' + d.split("M").filter(Boolean).map(seg => { const p = seg.trim().split(/[L ]+/).filter(Boolean); return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="1.5"/>'; }).join("") + '</g></svg>';
+}
 function fortuneFor(d, sign){
   const h = hash(keyOf(d) + ":" + sign.id);
   const pick = (arr, n) => arr[(h >>> n) % arr.length];
@@ -278,7 +297,7 @@ function renderToday(){
   document.getElementById("quote").textContent = quoteFor(d);
   const sign = signById(state.sign) || signForDate(d);
   document.getElementById("sign-label").textContent = sign.name + " · " + sign.range;
-  document.getElementById("sign-logo").textContent = sign.glyph;
+  document.getElementById("sign-logo").innerHTML = signSvg(sign.id);
   const f = fortuneFor(d, sign);
   document.getElementById("horo").textContent = "給" + sign.name + "嘅你，" + f.overall + f.love + f.work + "幸運色係" + f.color + "，數字 " + f.number + "。";
   document.getElementById("yi").textContent = YI[hash(k + sign.id) % YI.length];
@@ -434,7 +453,7 @@ function closePicker(){ document.getElementById("picker").classList.remove("on")
 const signBox = document.getElementById("signs");
 SIGNS.forEach(s => {
   const b = document.createElement("button");
-  b.innerHTML = '<span class="glyph">' + s.glyph + "</span>" + s.name + "<br><small>" + s.range + "</small>";
+  b.innerHTML = '<span class="glyph">' + signSvg(s.id) + "</span>" + s.name + "<br><small>" + s.range + "</small>";
   b.onclick = (e) => { e.stopPropagation(); saveSign(s.id); closePicker(); renderToday(); toast("已揀 " + s.name); };
   signBox.appendChild(b);
 });
