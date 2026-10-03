@@ -167,6 +167,7 @@ const ANIMALS = [
   { file: "animals/otter.jpg", name: "抱石水獺" },
   { file: "animals/duck.jpg", name: "雨褸鴨" }
 ];
+function quoteFor(d){ return QUOTES[hash(keyOf(d)) % QUOTES.length]; }
 function animalFor(d){ return ANIMALS[hash(keyOf(d) + "animal") % ANIMALS.length]; }
 function toast(msg){ const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 1400); }
 function loadFavs(){
