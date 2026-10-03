@@ -26,7 +26,12 @@
   .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
   .badge { font-size: 12px; border-radius: 999px; padding: 4px 8px; background: #f6efe4; color: #8e241c; border: 1px solid #eddccc; }
   .badge.term { color: #6d542c; }
-  .quote { font-size: 22px; line-height: 1.55; margin: 12px 0 8px; min-height: 88px; }
+  .quote { font-size: 22px; line-height: 1.55; margin: 12px 0 8px; min-height: 72px; }
+  .animal {
+    width: 100%; height: 210px; object-fit: cover; object-position: center 30%;
+    border-radius: 16px; margin-top: 12px; background: #f6efe4; display: block;
+  }
+  .animal-cap { margin: 6px 2px 0; color: var(--muted); font-size: 12px; text-align: right; }
   .almanac { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .almanac div { background: #fbf6ee; border-radius: 12px; padding: 8px 10px; font-size: 13px; }
   .almanac span { display: block; color: var(--gold); font-size: 11px; }
@@ -87,6 +92,8 @@
         </div>
       </div>
       <div class="badges" id="badges"></div>
+      <img class="animal" id="animal" alt="今日動物" />
+      <div class="animal-cap" id="animal-cap"></div>
       <div class="quote" id="quote"></div>
       <div class="almanac">
         <div><span>宜</span><b id="yi"></b></div>
@@ -127,7 +134,7 @@
       香港萬年曆，1901 至 2099 年。幹話同宜忌係原創廣東話，唔係煦暖曆或者任何賣緊嘅幹話曆。<br /><br />
       公眾假期跟《公眾假期條例》一般規則計：星期日、元旦、農曆年初一至初三（撞星期日就補年初四）、清明、耶穌受難節同翌日、復活節星期一、勞動節、佛誕、端午、七一、中秋翌日、國慶、重陽、聖誕同聖誕後第一個周日。如果補假撞到另一日公眾假期，就順延去下一個唔係假期嘅日子。某一年政府憲報如果另有指定，可能同呢度差一日。<br /><br />
       農曆同節氣用通用算法，跨日邊界可能差一日。冬至係節氣；法定假日入面冬至定聖誕由僱主二揀一，呢度冇當做成日公眾假期。<br /><br />
-      收藏只放喺呢部手機，唔連網。
+      收藏只放喺呢部手機，唔連網。每日卡通動物係原創插畫，同一日會見到同一隻。
     </div>
   </section>
 </div>
@@ -150,7 +157,17 @@ function clampYear(d){
   return d;
 }
 function hash(s){ let h = 0; for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) >>> 0; return h; }
-function quoteFor(d){ return QUOTES[hash(keyOf(d)) % QUOTES.length]; }
+const ANIMALS = [
+  { file: "animals/cat.jpg", name: "頸巾貓" },
+  { file: "animals/corgi.jpg", name: "笑口哥基" },
+  { file: "animals/rabbit.jpg", name: "飲茶兔" },
+  { file: "animals/capybara.jpg", name: "浸浴水豚" },
+  { file: "animals/penguin.jpg", name: "頸巾企鵝" },
+  { file: "animals/redpanda.jpg", name: "瞓緊小熊貓" },
+  { file: "animals/otter.jpg", name: "抱石水獺" },
+  { file: "animals/duck.jpg", name: "雨褸鴨" }
+];
+function animalFor(d){ return ANIMALS[hash(keyOf(d) + "animal") % ANIMALS.length]; }
 function toast(msg){ const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 1400); }
 function loadFavs(){
   let raw = "";
@@ -181,6 +198,11 @@ function renderToday(){
   if (k === keyOf(todayDate())) badges.innerHTML += '<span class="badge term">今日</span>';
   if (!holiday && !term) badges.innerHTML += '<span class="badge term">平淡一日都算數</span>';
   document.getElementById("quote").textContent = quoteFor(d);
+  const animal = animalFor(d);
+  const img = document.getElementById("animal");
+  img.src = animal.file;
+  img.alt = animal.name;
+  document.getElementById("animal-cap").textContent = "今日動物 · " + animal.name;
   const h = hash(k);
   document.getElementById("yi").textContent = YI[h % YI.length];
   document.getElementById("ji").textContent = JI[(h >> 3) % JI.length];
