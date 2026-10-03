@@ -6,9 +6,7 @@
 
 ## 畫面
 
-![今日卡](images/phone.png)
-
-![網頁版](images/today.png)
+![今日卡](images/today-card.png)
 
 ## 功能
 
