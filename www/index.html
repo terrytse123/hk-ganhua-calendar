@@ -97,21 +97,21 @@
   .cell.sun, .cell.holiday { color: #ffb4a8; }
   .cell.today { background: #f4f7ff; color: #102033; }
   .cell.selected { outline: 2px solid #f0d7a2; }
-  button.primary { background: var(--ink); color: #f7f1e6; border-color: var(--ink); }
-  button.ghost { background: transparent; }
-  button.active { color: var(--red); border-color: #efc8c2; background: #fff5f3; }
+  button.primary { background: #f4f7ff; color: #102033; border-color: #f4f7ff; }
+  button.ghost { background: transparent; color: #f4f7ff; }
+  button.active { color: #ffb4a8; border-color: #ffb4a8; background: transparent; }
   .actions button { flex: 1; }
   .nav-month { justify-content: space-between; }
-  .nav-month strong { font-size: 16px; }
+  .nav-month strong { font-size: 16px; color: #f4f7ff; }
   .weekdays, .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .weekdays div { text-align: center; font-size: 12px; color: var(--muted); padding: 4px 0; }
-  .weekdays div:first-child { color: var(--red); }
-  .cell { aspect-ratio: 1; border: 0; background: transparent; border-radius: 12px; font-size: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .cell.out { opacity: .28; }
-  .cell.sun { color: var(--red); }
-  .cell.holiday { color: var(--red); font-weight: 700; }
-  .cell.today { background: var(--ink); color: #f7f1e6; }
-  .cell.selected { outline: 2px solid var(--gold); }
+  .weekdays div { text-align: center; font-size: 12px; color: #f4f7ff; padding: 4px 0; }
+  .weekdays div:first-child { color: #ffb4a8; }
+  .cell { aspect-ratio: 1; border: 0; background: transparent; border-radius: 12px; font-size: 14px; color: #f4f7ff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .cell.out { opacity: .35; }
+  .cell.sun { color: #ffb4a8; }
+  .cell.holiday { color: #ffb4a8; font-weight: 700; }
+  .cell.today { background: #f4f7ff; color: #102033; }
+  .cell.selected { outline: 2px solid #f0d7a2; }
   .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--red); }
   .cell.today .dot { background: #f2c9c4; }
   .panel { display: none; }
