@@ -50,6 +50,9 @@ public class TodayWidget extends AppWidgetProvider {
                 views.setInt(R.id.widget_root, "setBackgroundColor", Color.TRANSPARENT);
             }
         } else {
+            Bitmap solid = Bitmap.createBitmap(4, 4, Bitmap.Config.ARGB_8888);
+            solid.eraseColor(Color.argb(alpha, 16, 32, 51));
+            views.setImageViewBitmap(R.id.widget_bg, solid);
             views.setInt(R.id.widget_root, "setBackgroundColor", Color.argb(alpha, 16, 32, 51));
         }
         views.setTextViewText(R.id.widget_date, (now.get(Calendar.MONTH) + 1) + "月" + now.get(Calendar.DAY_OF_MONTH) + "日");
