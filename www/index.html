@@ -27,11 +27,20 @@
   .badge { font-size: 12px; border-radius: 999px; padding: 4px 8px; background: #f6efe4; color: #8e241c; border: 1px solid #eddccc; }
   .badge.term { color: #6d542c; }
   .quote { font-size: 22px; line-height: 1.55; margin: 12px 0 8px; min-height: 72px; }
-  .animal {
-    width: 100%; height: 280px; object-fit: cover; object-position: center 18%;
-    border-radius: 18px; margin-top: 12px; background: #f6efe4; display: block;
+  .sign-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .sign-btn { border-radius: 999px; padding: 8px 12px; }
+  .horo { margin-top: 8px; display: grid; gap: 8px; }
+  .horo div { background: #fbf6ee; border-radius: 12px; padding: 8px 10px; font-size: 14px; line-height: 1.55; }
+  .horo span { display: block; color: var(--gold); font-size: 11px; margin-bottom: 2px; }
+  .stars { color: var(--red); letter-spacing: 2px; }
+  .picker {
+    position: fixed; inset: 0; background: rgba(28,25,21,.45); display: none;
+    align-items: flex-end; justify-content: center; z-index: 5;
   }
-  .animal-cap { margin: 6px 2px 0; color: var(--muted); font-size: 12px; text-align: right; }
+  .picker.on { display: flex; }
+  .picker-card { width: min(480px, 100%); background: var(--card); border-radius: 22px 22px 0 0; padding: 16px 16px 28px; }
+  .signs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+  .signs button { min-height: 64px; }
   .almanac { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .almanac div { background: #fbf6ee; border-radius: 12px; padding: 8px 10px; font-size: 13px; }
   .almanac span { display: block; color: var(--gold); font-size: 11px; }
@@ -76,7 +85,7 @@
       <div class="seal">幹</div>
       <div>
         <h1>香港幹話曆</h1>
-        <div class="sub">萬年曆 · 廣東話 · 原創</div>
+        <div class="sub">萬年曆 · 廣東話 · 星座運程</div>
       </div>
     </div>
     <div class="year-chip" id="gz">香港</div>
@@ -92,9 +101,12 @@
         </div>
       </div>
       <div class="badges" id="badges"></div>
-      <img class="animal" id="animal" alt="今日動物" />
-      <div class="animal-cap" id="animal-cap"></div>
       <div class="quote" id="quote"></div>
+      <div class="sign-row">
+        <strong id="sign-label">未揀星座</strong>
+        <button id="pick-sign" class="sign-btn ghost">揀星座</button>
+      </div>
+      <div class="horo" id="horo"></div>
       <div class="almanac">
         <div><span>宜</span><b id="yi"></b></div>
         <div><span>忌</span><b id="ji"></b></div>
@@ -134,7 +146,7 @@
       香港萬年曆，1901 至 2099 年。幹話同宜忌係原創廣東話，唔係煦暖曆或者任何賣緊嘅幹話曆。<br /><br />
       公眾假期跟《公眾假期條例》一般規則計：星期日、元旦、農曆年初一至初三（撞星期日就補年初四）、清明、耶穌受難節同翌日、復活節星期一、勞動節、佛誕、端午、七一、中秋翌日、國慶、重陽、聖誕同聖誕後第一個周日。如果補假撞到另一日公眾假期，就順延去下一個唔係假期嘅日子。某一年政府憲報如果另有指定，可能同呢度差一日。<br /><br />
       農曆同節氣用通用算法，跨日邊界可能差一日。冬至係節氣；法定假日入面冬至定聖誕由僱主二揀一，呢度冇當做成日公眾假期。<br /><br />
-      收藏只放喺呢部手機，唔連網。每日動物相來自 Wikimedia Commons，可再用授權，同一日固定一張，鄰近日子唔同。相庫約一百八十張，所以隔一段日子會再見到同一張。出處同授權寫喺照片說明。
+      收藏只放喺呢部手機，唔連網。星座運程係玩味文字，按日期同你揀嘅星座固定生成，唔係天文預測，亦唔係投資或感情建議。
     </div>
   </section>
 </div>
@@ -144,10 +156,16 @@
   <button data-tab="search">搜尋</button>
   <button data-tab="about">關於</button>
 </nav>
+<div class="picker" id="picker">
+  <div class="picker-card">
+    <strong>揀你嘅星座</strong>
+    <div class="sub">揀一次就得，之後每日顯示該星座運程。可以隨時改。</div>
+    <div class="signs" id="signs"></div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 <script src="calendar.js"></script>
 <script src="data.js"></script>
-<script src="photos.js"></script>
 <script>
 const WEEK = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
 const state = { tab: "today", cursor: null, month: null, favs: new Set() };
@@ -158,10 +176,39 @@ function clampYear(d){
   return d;
 }
 function hash(s){ let h = 0; for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) >>> 0; return h; }
+const SIGNS = [
+  { id: "aries", name: "白羊座", range: "3/21–4/19" },
+  { id: "taurus", name: "金牛座", range: "4/20–5/20" },
+  { id: "gemini", name: "雙子座", range: "5/21–6/21" },
+  { id: "cancer", name: "巨蟹座", range: "6/22–7/22" },
+  { id: "leo", name: "獅子座", range: "7/23–8/22" },
+  { id: "virgo", name: "處女座", range: "8/23–9/22" },
+  { id: "libra", name: "天秤座", range: "9/23–10/23" },
+  { id: "scorpio", name: "天蠍座", range: "10/24–11/22" },
+  { id: "sagittarius", name: "射手座", range: "11/23–12/21" },
+  { id: "capricorn", name: "魔羯座", range: "12/22–1/19" },
+  { id: "aquarius", name: "水瓶座", range: "1/20–2/18" },
+  { id: "pisces", name: "雙魚座", range: "2/19–3/20" }
+];
+const OVERALL = ["今日宜慢半拍，急事先放低。","有人會突然搵你，回短句就得。","節奏順，唔使同人比較。","小阻滯會出現，轉個方法就過。","適合收尾，唔適合開新戰場。","直覺準過建議，聽完可以唔跟。","午後精神好過朝早。","今日貴精唔貴多。","有句唔講得太盡嘅話，留到聽日。","平淡就係好運。"];
+const LOVE = ["感情宜直講，忌猜。","單身唔使急，熟人也得。","拍拖記得稱讚一件具體嘅事。","舊話題唔好再翻。","今晚適合食飯多過傾計。","畀對方空間，自己都輕。","一句多謝好過一份禮物。","唔好用已讀試探人。"];
+const WORK = ["工作先做最煩嗰件。","會議可以短，結論要寫低。","唔好臨時應承新項目。","同事嘅忙，唔係你嘅期限。","適合整理，唔適合表演。","一個清楚回覆就夠。","下午先做需要判斷嘅事。","收工可以停。"];
+const MONEY = ["財運平穩，唔好追消息。","小額支出要記低。","適合儲，唔適合搏。","免費嘢都有代價。","舊單先清，再講新單。","今日唔係投資日。","飯錢可以花，衝動唔好。","對住數字飲杯水先決定。"];
+const COLORS = ["紅色","米色","深藍","綠色","金色","白色","杏色","黑色"];
 function quoteFor(d){ return QUOTES[hash(keyOf(d)) % QUOTES.length]; }
-function animalFor(d){
-  const doy = Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(d.getFullYear(), 0, 1)) / 86400000);
-  return PHOTOS[(d.getFullYear() * 366 + doy) % PHOTOS.length];
+function signById(id){ return SIGNS.find(s => s.id === id) || null; }
+function fortuneFor(d, sign){
+  const h = hash(keyOf(d) + ":" + sign.id);
+  const pick = (arr, n) => arr[(h >> n) % arr.length];
+  return {
+    stars: 3 + (h % 3),
+    overall: pick(OVERALL, 1),
+    love: pick(LOVE, 4),
+    work: pick(WORK, 7),
+    money: pick(MONEY, 10),
+    color: pick(COLORS, 13),
+    number: (h % 9) + 1
+  };
 }
 function toast(msg){ const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 1400); }
 function loadFavs(){
@@ -193,11 +240,19 @@ function renderToday(){
   if (k === keyOf(todayDate())) badges.innerHTML += '<span class="badge term">今日</span>';
   if (!holiday && !term) badges.innerHTML += '<span class="badge term">平淡一日都算數</span>';
   document.getElementById("quote").textContent = quoteFor(d);
-  const animal = animalFor(d);
-  const img = document.getElementById("animal");
-  img.src = animal.file;
-  img.alt = animal.title || "今日動物相";
-  document.getElementById("animal-cap").textContent = "今日大頭相 · " + (animal.license || "Wikimedia");
+  const sign = signById(state.sign);
+  document.getElementById("sign-label").textContent = sign ? sign.name + " · " + sign.range : "未揀星座";
+  const box = document.getElementById("horo");
+  if (!sign) {
+    box.innerHTML = '<div>先揀星座，先有今日運程。</div>';
+  } else {
+    const f = fortuneFor(d, sign);
+    box.innerHTML = '<div><span>今日運勢</span><b class="stars">' + "★".repeat(f.stars) + "☆".repeat(5 - f.stars) + "</b> " + f.overall + "</div>"
+      + "<div><span>感情</span>" + f.love + "</div>"
+      + "<div><span>工作</span>" + f.work + "</div>"
+      + "<div><span>財運</span>" + f.money + "</div>"
+      + "<div><span>幸運</span>色 " + f.color + " · 數字 " + f.number + "</div>";
+  }
   const h = hash(k);
   document.getElementById("yi").textContent = YI[h % YI.length];
   document.getElementById("ji").textContent = JI[(h >> 3) % JI.length];
@@ -279,7 +334,8 @@ function showTab(name){
 }
 function shareCurrent(){
   const d = state.cursor;
-  const text = "香港幹話曆 " + keyOf(d) + " " + lunarLabel(solarToLunar(d)) + "\n" + quoteFor(d);
+  const sign = signById(state.sign);
+  const text = "香港幹話曆 " + keyOf(d) + " " + (sign ? sign.name : "") + "\n" + quoteFor(d);
   if (window.AndroidBridge && AndroidBridge.share) AndroidBridge.share(text);
   else if (navigator.share) navigator.share({ text }).catch(() => {});
   else navigator.clipboard.writeText(text).then(() => toast("已複製"));
@@ -297,6 +353,7 @@ function shiftMonth(n){
   state.month = m; renderMonth();
 }
 window.handleAndroidBack = function(){
+  if (document.getElementById("picker").classList.contains("on") && state.sign){ closePicker(); return false; }
   if (state.tab !== "today"){ showTab("today"); return false; }
   const t = todayDate();
   if (keyOf(state.cursor) !== keyOf(t)){ state.cursor = t; state.month = new Date(t.getFullYear(), t.getMonth(), 1); renderToday(); renderMonth(); return false; }
@@ -325,7 +382,31 @@ document.getElementById("today-card").addEventListener("touchend", e => {
   if (Math.abs(dx) > 50) shift(dx < 0 ? 1 : -1);
   touchX = null;
 }, { passive: true });
+function loadSign(){
+  let id = "";
+  try { id = localStorage.getItem("sign") || ""; } catch (e) {}
+  if (!id && window.AndroidBridge) { try { id = AndroidBridge.load("sign") || ""; } catch (e) {} }
+  state.sign = id;
+}
+function saveSign(id){
+  state.sign = id;
+  try { localStorage.setItem("sign", id); } catch (e) {}
+  if (window.AndroidBridge) { try { AndroidBridge.save("sign", id); } catch (e) {} }
+}
+function openPicker(){ document.getElementById("picker").classList.add("on"); }
+function closePicker(){ document.getElementById("picker").classList.remove("on"); }
+const signBox = document.getElementById("signs");
+SIGNS.forEach(s => {
+  const b = document.createElement("button");
+  b.innerHTML = s.name + "<br><small>" + s.range + "</small>";
+  b.onclick = () => { saveSign(s.id); closePicker(); renderToday(); toast("已揀 " + s.name); };
+  signBox.appendChild(b);
+});
+document.getElementById("pick-sign").onclick = openPicker;
+document.getElementById("picker").onclick = (e) => { if (e.target.id === "picker" && state.sign) closePicker(); };
 loadFavs();
+loadSign();
+if (!state.sign) openPicker();
 state.cursor = todayDate();
 if (state.cursor.getFullYear() < MIN_YEAR || state.cursor.getFullYear() > MAX_YEAR) state.cursor = new Date(2026, 0, 1);
 state.month = new Date(state.cursor.getFullYear(), state.cursor.getMonth(), 1);
