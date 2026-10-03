@@ -295,6 +295,8 @@ function renderToday(){
   document.getElementById("holiday-label").textContent = holiday || term || "平日";
   document.getElementById("gz").textContent = lunar ? lunarLabel(lunar) : "香港";
   document.getElementById("quote").textContent = quoteFor(d);
+  document.getElementById("yi").textContent = YI[hash(k + ":yi") % YI.length];
+  document.getElementById("ji").textContent = JI[hash(k + ":ji") % JI.length];
   try {
     const sign = signById(state.sign) || signForDate(d);
     document.getElementById("sign-label").textContent = sign.name + " · " + sign.range;
@@ -302,8 +304,6 @@ function renderToday(){
     if (logo) logo.innerHTML = signSvg(sign.id);
     const f = fortuneFor(d, sign);
     document.getElementById("horo").textContent = "給" + sign.name + "嘅你，" + (f.overall || "") + (f.love || "") + (f.work || "") + "幸運色係" + (f.color || "藍色") + "，數字 " + f.number + "。";
-    document.getElementById("yi").textContent = YI[hash(k + sign.id) % YI.length];
-    document.getElementById("ji").textContent = JI[hash(k + sign.id + "ji") % JI.length];
   } catch (e) {}
   const fav = document.getElementById("fav");
   const on = state.favs.has(k);
