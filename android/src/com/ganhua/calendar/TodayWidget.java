@@ -46,12 +46,6 @@ public class TodayWidget extends AppWidgetProvider {
         PendingIntent pending = PendingIntent.getActivity(
                 context, 0, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         views.setOnClickPendingIntent(R.id.widget_root, pending);
-        Intent config = new Intent(context, WidgetConfig.class);
-        config.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-        config.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent settings = PendingIntent.getActivity(
-                context, id, config, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        views.setOnClickPendingIntent(R.id.widget_settings, settings);
         manager.updateAppWidget(id, views);
         if (weather) {
             new Thread(() -> {

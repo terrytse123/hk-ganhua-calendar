@@ -30,7 +30,7 @@ https://terrytse123.github.io/hk-ganhua-calendar/
 
 ## Android
 
-已簽名 APK 喺 [Releases](https://github.com/terrytse123/hk-ganhua-calendar/releases)。而家最新係 [v4.4](https://github.com/terrytse123/hk-ganhua-calendar/releases/tag/v4.4)，包括天氣、透明度同星座運程嘅桌面小工具。加咗之後可以撳小工具右上角「設定」再改透明度和天氣。Android 7 或以上，允許呢個來源安裝。
+已簽名 APK 喺 [Releases](https://github.com/terrytse123/hk-ganhua-calendar/releases)。而家最新係 [v4.5](https://github.com/terrytse123/hk-ganhua-calendar/releases/tag/v4.5)，包括天氣、透明度同星座運程嘅桌面小工具。長按小工具，選單先會出現「設定」，可以再改透明度和天氣。Android 7 或以上，允許呢個來源安裝。
 
 源碼係一個 WebView 殼：
 
