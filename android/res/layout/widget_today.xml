@@ -40,4 +40,13 @@
         android:text="今日幹話"
         android:textColor="#FFFFFF"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/widget_fortune"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text=""
+        android:textColor="#F0D7A2"
+        android:textSize="13sp" />
 </LinearLayout>

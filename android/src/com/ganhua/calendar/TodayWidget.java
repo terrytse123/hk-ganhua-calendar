@@ -40,6 +40,7 @@ public class TodayWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.widget_date, (now.get(Calendar.MONTH) + 1) + "月" + now.get(Calendar.DAY_OF_MONTH) + "日");
         views.setTextViewText(R.id.widget_week, WEEK[now.get(Calendar.DAY_OF_WEEK) - 1]);
         views.setTextViewText(R.id.widget_quote, quoteFor(context, now));
+        views.setTextViewText(R.id.widget_fortune, fortuneFor(context, now));
         views.setTextViewText(R.id.widget_weather, weather ? "天氣載入中" : "");
         Intent open = new Intent(context, MainActivity.class);
         PendingIntent pending = PendingIntent.getActivity(
@@ -93,6 +94,51 @@ public class TodayWidget extends AppWidgetProvider {
         if (quotes.isEmpty()) return "今日先休息，聽日再安排。";
         int key = now.get(Calendar.YEAR) * 10000 + (now.get(Calendar.MONTH) + 1) * 100 + now.get(Calendar.DAY_OF_MONTH);
         return quotes.get(Math.floorMod(key * 33, quotes.size()));
+    }
+
+    private static String fortuneFor(Context context, Calendar now) {
+        String sign = context.getSharedPreferences("ganhua", Context.MODE_PRIVATE).getString("sign", "");
+        if (sign == null || sign.isEmpty()) sign = signForDate(now);
+        String name = signName(sign);
+        int key = now.get(Calendar.YEAR) * 10000 + (now.get(Calendar.MONTH) + 1) * 100 + now.get(Calendar.DAY_OF_MONTH) + sign.hashCode();
+        String[] overall = {"今日宜慢半拍。", "節奏順。", "午後精神好過朝早。", "平淡就係好運。"};
+        String[] love = {"感情宜直講。", "一句多謝好過一份禮物。", "今晚適合食飯。"};
+        String[] work = {"會議可以短。", "先做最煩嗰件。", "收工可以停。"};
+        int n = Math.floorMod(key, 9) + 1;
+        return name + "：" + overall[Math.floorMod(key, overall.length)] + love[Math.floorMod(key, love.length)] + work[Math.floorMod(key, work.length)] + " 數字" + n;
+    }
+
+    private static String signForDate(Calendar now) {
+        int md = (now.get(Calendar.MONTH) + 1) * 100 + now.get(Calendar.DAY_OF_MONTH);
+        if (md >= 1222 || md < 120) return "capricorn";
+        if (md < 219) return "aquarius";
+        if (md < 321) return "pisces";
+        if (md < 420) return "aries";
+        if (md < 521) return "taurus";
+        if (md < 622) return "gemini";
+        if (md < 723) return "cancer";
+        if (md < 823) return "leo";
+        if (md < 923) return "virgo";
+        if (md < 1024) return "libra";
+        if (md < 1123) return "scorpio";
+        return "sagittarius";
+    }
+
+    private static String signName(String id) {
+        switch (id) {
+            case "aries": return "白羊座";
+            case "taurus": return "金牛座";
+            case "gemini": return "雙子座";
+            case "cancer": return "巨蟹座";
+            case "leo": return "獅子座";
+            case "virgo": return "處女座";
+            case "libra": return "天秤座";
+            case "scorpio": return "天蠍座";
+            case "sagittarius": return "射手座";
+            case "capricorn": return "魔羯座";
+            case "aquarius": return "水瓶座";
+            default: return "雙魚座";
+        }
     }
 
     private static List<String> loadQuotes(Context context) {
