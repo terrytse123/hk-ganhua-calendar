@@ -30,7 +30,7 @@ https://terrytse123.github.io/hk-ganhua-calendar/
 
 ## Android
 
-已簽名 APK 喺 [Releases](https://github.com/terrytse123/hk-ganhua-calendar/releases)。而家最新係 [v5.0](https://github.com/terrytse123/hk-ganhua-calendar/releases/tag/v5.0)。長按小工具，揀設定，再撳轉換背景。預覽裁切後要撳套用。Android 7 或以上，允許呢個來源安裝。
+已簽名 APK 喺 [Releases](https://github.com/terrytse123/hk-ganhua-calendar/releases)。而家最新係 [v5.1](https://github.com/terrytse123/hk-ganhua-calendar/releases/tag/v5.1)。背景預覽可以直接拖拉同雙指縮放，再撳套用。Android 7 或以上，允許呢個來源安裝。
 
 源碼係一個 WebView 殼：
 

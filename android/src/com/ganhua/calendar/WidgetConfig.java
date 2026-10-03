@@ -10,7 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -24,9 +25,12 @@ public class WidgetConfig extends Activity {
     private int widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Bitmap source;
     private ImageView preview;
-    private SeekBar zoom;
-    private SeekBar cropX;
-    private SeekBar cropY;
+    private float zoomLevel = 1f;
+    private float focusX = 0.5f;
+    private float focusY = 0.5f;
+    private float lastX;
+    private float lastY;
+    private float lastSpan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +52,7 @@ public class WidgetConfig extends Activity {
         SeekBar seek = findViewById(R.id.alpha_seek);
         TextView label = findViewById(R.id.alpha_label);
         preview = findViewById(R.id.bg_preview);
-        zoom = findViewById(R.id.zoom_seek);
-        cropX = findViewById(R.id.crop_x);
-        cropY = findViewById(R.id.crop_y);
+        preview.setOnTouchListener(this::onPreviewTouch);
         weather.setChecked(prefs.getBoolean(widgetId + "_weather", true));
         int alpha = prefs.getInt(widgetId + "_alpha", 180);
         seek.setProgress(alpha - 50);
@@ -62,14 +64,6 @@ public class WidgetConfig extends Activity {
             public void onStartTrackingTouch(SeekBar bar) {}
             public void onStopTrackingTouch(SeekBar bar) {}
         });
-        SeekBar.OnSeekBarChangeListener cropListener = new SeekBar.OnSeekBarChangeListener() {
-            public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) { showCrop(); }
-            public void onStartTrackingTouch(SeekBar bar) {}
-            public void onStopTrackingTouch(SeekBar bar) {}
-        };
-        zoom.setOnSeekBarChangeListener(cropListener);
-        cropX.setOnSeekBarChangeListener(cropListener);
-        cropY.setOnSeekBarChangeListener(cropListener);
         findViewById(R.id.pick_bg).setOnClickListener(v -> {
             Intent choose = new Intent(Intent.ACTION_GET_CONTENT);
             choose.addCategory(Intent.CATEGORY_OPENABLE);
@@ -108,15 +102,41 @@ public class WidgetConfig extends Activity {
             int w = 900;
             int h = Math.max(1, raw.getHeight() * w / Math.max(1, raw.getWidth()));
             source = Bitmap.createScaledBitmap(raw, w, h, true);
-            zoom.setProgress(0);
-            cropX.setProgress(50);
-            cropY.setProgress(50);
+            zoomLevel = 1f;
+            focusX = 0.5f;
+            focusY = 0.5f;
             showCrop();
             Toast.makeText(this, "可以裁切，再撳套用", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(this, "張圖打唔開", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private boolean onPreviewTouch(View view, MotionEvent event) {
+        if (source == null) return false;
+        if (event.getPointerCount() >= 2) {
+            float dx = event.getX(0) - event.getX(1);
+            float dy = event.getY(0) - event.getY(1);
+            float span = (float) Math.hypot(dx, dy);
+            if (event.getActionMasked() == MotionEvent.ACTION_MOVE && lastSpan > 0) {
+                zoomLevel = Math.max(1f, Math.min(3f, zoomLevel * span / lastSpan));
+                showCrop();
+            }
+            lastSpan = span;
+            return true;
+        }
+        lastSpan = 0;
+        if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+            focusX = clamp(focusX - (event.getX() - lastX) / Math.max(1, view.getWidth()));
+            focusY = clamp(focusY - (event.getY() - lastY) / Math.max(1, view.getHeight()));
+            showCrop();
+        }
+        lastX = event.getX();
+        lastY = event.getY();
+        return true;
+    }
+
+    private float clamp(float n) { return Math.max(0f, Math.min(1f, n)); }
 
     private void showCrop() {
         Bitmap cropped = crop();
@@ -125,13 +145,13 @@ public class WidgetConfig extends Activity {
 
     private Bitmap crop() {
         if (source == null) return null;
-        float scale = 1f + zoom.getProgress() / 100f;
+        float scale = zoomLevel;
         int cw = Math.max(1, Math.round(source.getWidth() / scale));
         int ch = Math.max(1, Math.round(source.getHeight() / scale));
         int maxX = Math.max(0, source.getWidth() - cw);
         int maxY = Math.max(0, source.getHeight() - ch);
-        int x = Math.round(maxX * (cropX.getProgress() / 100f));
-        int y = Math.round(maxY * (cropY.getProgress() / 100f));
+        int x = Math.round(maxX * focusX);
+        int y = Math.round(maxY * focusY);
         return Bitmap.createBitmap(source, x, y, cw, ch);
     }
 

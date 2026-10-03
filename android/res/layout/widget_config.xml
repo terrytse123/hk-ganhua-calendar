@@ -57,7 +57,7 @@
         <ImageView
             android:id="@+id/bg_preview"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="220dp"
             android:layout_marginTop="12dp"
             android:background="#071426"
             android:scaleType="centerCrop" />
@@ -66,41 +66,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="縮放"
-            android:textColor="#F4F7FF" />
-
-        <SeekBar
-            android:id="@+id/zoom_seek"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:progress="0" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="左右裁切"
-            android:textColor="#F4F7FF" />
-
-        <SeekBar
-            android:id="@+id/crop_x"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:progress="50" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="上下裁切"
-            android:textColor="#F4F7FF" />
-
-        <SeekBar
-            android:id="@+id/crop_y"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:progress="50" />
+            android:text="喺圖上拖拉同雙指縮放，再撳套用裁切"
+            android:textColor="#C9D4EA" />
 
         <Button
             android:id="@+id/apply_bg"
