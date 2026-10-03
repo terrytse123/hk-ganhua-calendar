@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#102033"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="小工具設定"
+        android:textColor="#F4F7FF"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <CheckBox
+        android:id="@+id/weather_toggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="顯示香港天氣"
+        android:textColor="#F4F7FF" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="透明度"
+        android:textColor="#F4F7FF" />
+
+    <SeekBar
+        android:id="@+id/alpha_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="80"
+        android:progress="35" />
+
+    <TextView
+        android:id="@+id/alpha_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="65%"
+        android:textColor="#C9D4EA" />
+
+    <Button
+        android:id="@+id/save_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="完成" />
+</LinearLayout>
