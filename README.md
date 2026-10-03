@@ -17,6 +17,7 @@
 - 先揀星座，每日顯示該星座運程、幸運色同數字
 - 通勝宜忌：按農曆月支同當日干支計建除十二神（建、除、滿、平、定、執、破、危、成、收、開、閉），隔日唔同
 - 全螢幕星空背景同星座線條圖示
+- 桌面小工具：顯示今日日期、星期同幹話，撳一下打開日曆。系統大約每 30 分鐘自動更新一次；加落主畫面或打開 App 時會即時更新
 - 收藏同分享，資料只放喺部手機
 
 ## 網頁版
@@ -29,7 +30,7 @@ https://terrytse123.github.io/hk-ganhua-calendar/
 
 ## Android
 
-已簽名 APK 喺 [Releases](https://github.com/terrytse123/hk-ganhua-calendar/releases)。而家最新係 [v4.0](https://github.com/terrytse123/hk-ganhua-calendar/releases/tag/v4.0)。Android 7 或以上，允許呢個來源安裝。
+已簽名 APK 喺 [Releases](https://github.com/terrytse123/hk-ganhua-calendar/releases)。而家最新係 [v4.1](https://github.com/terrytse123/hk-ganhua-calendar/releases/tag/v4.1)，包括桌面小工具。Android 7 或以上，允許呢個來源安裝。
 
 源碼係一個 WebView 殼：
 
