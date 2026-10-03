@@ -43,7 +43,7 @@ public class TodayWidget extends AppWidgetProvider {
         boolean image = prefs.getBoolean(id + "_image", false);
         File bg = new File(context.getFilesDir(), "widget-" + id + ".jpg");
         if (image && bg.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(bg.getAbsolutePath());
+            Bitmap bitmap = decodeSmall(bg);
             if (bitmap != null) {
                 views.setImageViewBitmap(R.id.widget_bg, bitmap);
                 views.setInt(R.id.widget_bg, "setImageAlpha", alpha);
@@ -72,6 +72,17 @@ public class TodayWidget extends AppWidgetProvider {
                 manager.updateAppWidget(id, views);
             }).start();
         }
+    }
+
+    private static Bitmap decodeSmall(File file) {
+        BitmapFactory.Options bounds = new BitmapFactory.Options();
+        bounds.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), bounds);
+        int sample = 1;
+        while (bounds.outWidth / sample > 480) sample *= 2;
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inSampleSize = sample;
+        return BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
     }
 
     private static String fetchWeather() {

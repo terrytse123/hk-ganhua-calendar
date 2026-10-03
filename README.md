@@ -30,7 +30,7 @@ https://terrytse123.github.io/hk-ganhua-calendar/
 
 ## Android
 
-已簽名 APK 喺 [Releases](https://github.com/terrytse123/hk-ganhua-calendar/releases)。而家最新係 [v4.9](https://github.com/terrytse123/hk-ganhua-calendar/releases/tag/v4.9)。長按小工具先出現「設定」：可預覽同裁切背景，套用先先更換，亦可改返純色。轉星座後小工具會即時更新。Android 7 或以上，允許呢個來源安裝。
+已簽名 APK 喺 [Releases](https://github.com/terrytse123/hk-ganhua-calendar/releases)。而家最新係 [v5.0](https://github.com/terrytse123/hk-ganhua-calendar/releases/tag/v5.0)。長按小工具，揀設定，再撳轉換背景。預覽裁切後要撳套用。Android 7 或以上，允許呢個來源安裝。
 
 源碼係一個 WebView 殼：
 

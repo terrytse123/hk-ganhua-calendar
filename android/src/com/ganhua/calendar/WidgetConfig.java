@@ -2,7 +2,9 @@ package com.ganhua.calendar;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.widget.Toast;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,6 +35,11 @@ public class WidgetConfig extends Activity {
         setContentView(R.layout.widget_config);
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(new ComponentName(this, TodayWidget.class));
+            if (ids.length > 0) widgetId = ids[0];
+        }
+        if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            Toast.makeText(this, "請先加小工具", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -64,10 +71,10 @@ public class WidgetConfig extends Activity {
         cropX.setOnSeekBarChangeListener(cropListener);
         cropY.setOnSeekBarChangeListener(cropListener);
         findViewById(R.id.pick_bg).setOnClickListener(v -> {
-            Intent choose = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            Intent choose = new Intent(Intent.ACTION_GET_CONTENT);
             choose.addCategory(Intent.CATEGORY_OPENABLE);
             choose.setType("image/*");
-            startActivityForResult(choose, 21);
+            startActivityForResult(Intent.createChooser(choose, "轉換背景"), 21);
         });
         findViewById(R.id.apply_bg).setOnClickListener(v -> applyCrop());
         findViewById(R.id.clear_bg).setOnClickListener(v -> {
@@ -105,7 +112,9 @@ public class WidgetConfig extends Activity {
             cropX.setProgress(50);
             cropY.setProgress(50);
             showCrop();
-        } catch (Exception ignored) {
+            Toast.makeText(this, "可以裁切，再撳套用", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "張圖打唔開", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -134,7 +143,9 @@ public class WidgetConfig extends Activity {
             cropped.compress(Bitmap.CompressFormat.JPEG, 82, fos);
             getSharedPreferences("widget", MODE_PRIVATE).edit().putBoolean(widgetId + "_image", true).apply();
             TodayWidget.update(this, AppWidgetManager.getInstance(this), widgetId);
-        } catch (Exception ignored) {
+            Toast.makeText(this, "背景已套用", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "套用失敗", Toast.LENGTH_SHORT).show();
         }
     }
 
