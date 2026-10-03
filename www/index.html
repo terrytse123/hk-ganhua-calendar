@@ -88,7 +88,15 @@
   .almanac div { background: #fbf6ee; border-radius: 12px; padding: 8px 10px; font-size: 13px; }
   .almanac span { display: block; color: var(--gold); font-size: 11px; }
   .actions, .nav-month { display: flex; gap: 8px; margin-top: 12px; align-items: center; }
-  button { font-family: inherit; border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 12px; padding: 10px 8px; font-size: 14px; }
+  button { font-family: inherit; border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.1); color: #f4f7ff; border-radius: 12px; padding: 10px 8px; font-size: 14px; }
+  button.primary { background: #f4f7ff; color: #102033; border-color: #f4f7ff; }
+  button.ghost { background: transparent; color: #f4f7ff; }
+  .nav-month strong, .weekdays div { color: #f4f7ff; }
+  .cell { aspect-ratio: 1; border: 0; background: transparent; border-radius: 12px; font-size: 14px; color: #f4f7ff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .cell.out { opacity: .35; }
+  .cell.sun, .cell.holiday { color: #ffb4a8; }
+  .cell.today { background: #f4f7ff; color: #102033; }
+  .cell.selected { outline: 2px solid #f0d7a2; }
   button.primary { background: var(--ink); color: #f7f1e6; border-color: var(--ink); }
   button.ghost { background: transparent; }
   button.active { color: var(--red); border-color: #efc8c2; background: #fff5f3; }
@@ -244,7 +252,7 @@ function quoteFor(d){ return QUOTES[hash(keyOf(d)) % QUOTES.length]; }
 function signById(id){ return SIGNS.find(s => s.id === id) || null; }
 function fortuneFor(d, sign){
   const h = hash(keyOf(d) + ":" + sign.id);
-  const pick = (arr, n) => arr[(h >> n) % arr.length];
+  const pick = (arr, n) => arr[(h >>> n) % arr.length];
   return {
     stars: 3 + (h % 3),
     overall: pick(OVERALL, 1),
