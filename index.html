@@ -299,13 +299,13 @@ function renderToday(){
   document.getElementById("yi").textContent = almanac.yi.join("、");
   document.getElementById("ji").textContent = almanac.ji.join("、");
   document.getElementById("holiday-label").textContent = almanac.gz + "日 · " + almanac.officer + (holiday ? " · " + holiday : "");
+  const sign = signById(state.sign) || signForDate(d);
+  document.getElementById("sign-label").textContent = sign.name + " · " + sign.range;
+  const f = fortuneFor(d, sign);
+  document.getElementById("horo").textContent = "給" + sign.name + "嘅你，" + f.overall + f.love + "工作上" + f.work + "幸運色" + f.color + "，數字" + f.number + "。";
   try {
-    const sign = signById(state.sign) || signForDate(d);
-    document.getElementById("sign-label").textContent = sign.name + " · " + sign.range;
     const logo = document.getElementById("sign-logo");
     if (logo) logo.innerHTML = signSvg(sign.id);
-    const f = fortuneFor(d, sign);
-    document.getElementById("horo").textContent = "給" + sign.name + "嘅你，" + (f.overall || "") + (f.love || "") + (f.work || "") + "幸運色係" + (f.color || "藍色") + "，數字 " + f.number + "。";
   } catch (e) {}
   const fav = document.getElementById("fav");
   const on = state.favs.has(k);
